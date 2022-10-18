@@ -1,6 +1,9 @@
 {
   "name": "web3rsvp",
   "packageManager": "yarn@3.2.4",
+  "scripts": {
+    "script": "npx hardhat run scripts/run.ts"
+  },
   "devDependencies": {
     "@ethersproject/abi": "^5.4.7",
     "@ethersproject/providers": "^5.4.7",

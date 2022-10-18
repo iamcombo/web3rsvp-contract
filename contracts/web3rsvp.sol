@@ -1,7 +1,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
+
 contract Web3Rsvp {
+    event NewEventCreated(
+        bytes32 eventID,
+        address creatorAddress,
+        uint256 eventTimestamp,
+        uint256 maxCapacity,
+        uint256 deposit,
+        string eventDataCID
+    );
+    event NewRSVP(bytes32 eventID, address attendeeAddress);
+    event ConfirmedAttendee(bytes32 eventID, address attendeeAddress);
+    event DepositsPaidOut(bytes32 eventID);
+
     struct CreateEvent {
         bytes32 eventId;
         string eventDataCID;
@@ -51,6 +64,15 @@ contract Web3Rsvp {
             _claimedRSVPs,
             false
         );
+
+        emit NewEventCreated(
+            _eventId,
+            msg.sender,
+            _eventTimestamp,
+            _maxCapacity,
+            _deposit,
+            _eventDataCID
+        );
     }
 
     // RSVP To Event
@@ -73,6 +95,8 @@ contract Web3Rsvp {
         }
 
         myEvent.confirmedRSVPs.push(payable(msg.sender));
+
+        emit NewRSVP(_eventId, msg.sender);
     }
 
     // Check In Attendees
@@ -117,6 +141,8 @@ contract Web3Rsvp {
         }
  
         require(sent, "Failed to send Ether");
+
+        emit ConfirmedAttendee(_eventId, _attendee);
     }
 
     // Confirm The Whole Group
@@ -164,5 +190,7 @@ contract Web3Rsvp {
         }
 
         require(sent, "Failed to send Ether");
+
+        emit DepositsPaidOut(_eventId);
     }
 }

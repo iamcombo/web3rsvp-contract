@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-
-contract Web3Rsvp {
+contract Web3RSVP {
     event NewEventCreated(
         bytes32 eventID,
         address creatorAddress,
@@ -11,8 +10,14 @@ contract Web3Rsvp {
         uint256 deposit,
         string eventDataCID
     );
-    event NewRSVP(bytes32 eventID, address attendeeAddress);
-    event ConfirmedAttendee(bytes32 eventID, address attendeeAddress);
+    event NewRSVP(
+        bytes32 eventID, 
+        address attendeeAddress
+    );
+    event ConfirmedAttendee(
+        bytes32 eventID, 
+        address attendeeAddress
+    );
     event DepositsPaidOut(bytes32 eventID);
 
     struct CreateEvent {
@@ -69,8 +74,8 @@ contract Web3Rsvp {
             _eventId,
             msg.sender,
             _eventTimestamp,
-            _deposit,
             _maxCapacity,
+            _deposit,
             _eventDataCID
         );
     }
@@ -112,7 +117,7 @@ contract Web3Rsvp {
         // require that attendee trying to check in actually RSVP'd
         address rsvpConfirm;
 
-        for(uint i; i < myEvent.confirmedRSVPs.length; i++) {
+        for(uint i = 0; i < myEvent.confirmedRSVPs.length; i++) {
             if(_attendee == myEvent.confirmedRSVPs[i]) {
                 rsvpConfirm = myEvent.confirmedRSVPs[i];
             }
@@ -122,7 +127,7 @@ contract Web3Rsvp {
 
         // require that attendee is NOT already in the claimedRSVPs list 
         // AKA make sure they haven't already checked in
-        for(uint i; i < myEvent.claimedRSVPs.length; i++) {
+        for(uint i = 0; i < myEvent.claimedRSVPs.length; i++) {
             require(_attendee != myEvent.claimedRSVPs[i], "ALREADY CLAIMED");
         }
 
@@ -155,7 +160,7 @@ contract Web3Rsvp {
         require(msg.sender == myEvent.eventOwner, "PERMISSION DENIED");
 
         // confirm each attendee in the rsvp array
-        for(uint i; i < myEvent.confirmedRSVPs.length; i++) {
+        for(uint i = 0; i < myEvent.confirmedRSVPs.length; i++) {
             confirmAttendee(_eventId, myEvent.confirmedRSVPs[i]);
         }
     }
@@ -172,6 +177,9 @@ contract Web3Rsvp {
 
         // check if it's been 7 days past myEvent.eventTimestamp
         require(block.timestamp >= (myEvent.eventTimestamp + 7 days), "TOO EARLY");
+
+        // only the event owner can withdraw
+        require(msg.sender == myEvent.eventOwner, "MUST BE EVENT OWNER");
 
         // calculate how many people didn't claim by comparing
         uint256 unclaimed = myEvent.confirmedRSVPs.length - myEvent.claimedRSVPs.length;

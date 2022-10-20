@@ -31,8 +31,8 @@ contract Web3Rsvp {
 
     function createNewEvent(
         uint256 _eventTimestamp,
-        uint256 _maxCapacity,
         uint256 _deposit,
+        uint256 _maxCapacity,
         string calldata _eventDataCID
     ) external {
         // generate an eventID based on other things passed in to generate a hash
@@ -69,8 +69,8 @@ contract Web3Rsvp {
             _eventId,
             msg.sender,
             _eventTimestamp,
-            _maxCapacity,
             _deposit,
+            _maxCapacity,
             _eventDataCID
         );
     }
